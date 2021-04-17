@@ -156,6 +156,8 @@ MonoBehaviour:
   maneurability: 10
   maxRotationAngle: 45
   rotationSpeed: 180
+  blasterDelay: 0.2
+  projectilePrefab: {fileID: 989252348989611820, guid: feea37e83908c6244bf89bf6b75ba178, type: 3}
 --- !u!135 &668990006
 SphereCollider:
   m_ObjectHideFlags: 0
