@@ -14,9 +14,7 @@ public class Enemy : MonoBehaviour
     [Tooltip("Delay between subsequent blaster shots")]
     [SerializeField] float blasterDelay = 2f;
 
-    [SerializeField] Trajectory trajectoryX = new TrajectorySine(-5f, 10f, 0.3f);
-
-    [SerializeField] Trajectory trajectoryZ = new TrajectoryLine(-3f);
+    [SerializeField] Trajectory trajectoryPrefab;
 
     // Game reference
     Game game;
@@ -56,14 +54,19 @@ public class Enemy : MonoBehaviour
 
     void Move()
     {
+        if (trajectoryPrefab == null)
+        {
+            Debug.Log("Enemy trajectory prefab is null");
+            return;
+        }
         // Make dead enemy stop
         if (dead) {
             return;
         }
-        var dpos = transform.position;
-        dpos.x = trajectoryX == null? (game.boundsMax.x + game.boundsMin.x) / 2 : trajectoryX.Value(Time.time - timeSpawn);
-        dpos.z = trajectoryZ == null? game.boundsMax.z : trajectoryZ.Value(Time.time - timeSpawn);
-        transform.position = initialPos + dpos;
+        var dt = Time.time - timeSpawn;
+        var traj = trajectoryPrefab.Position(dt);
+        transform.position = initialPos + traj;
+        Debug.Log("trajectory=" + traj);
     }
 
     void Shoot()

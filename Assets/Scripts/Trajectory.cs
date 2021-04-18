@@ -1,60 +1,60 @@
+using UnityEngine;
 using System;
 
-abstract public class Trajectory
+// Trajectory defines position in space after some time.
+// Initial position is zero vector. Add it to initial transform.position
+// to calculate actual position.
+public class Trajectory : MonoBehaviour
 {
-    abstract public float Value(float time);
-}
-
-public class TrajectoryStatic: Trajectory
-{
-    // Position of a trajectory
-    float pos;
-
-    public TrajectoryStatic(float p)
+    enum Type
     {
-        pos = p;
+        Static, // Always 0;
+        Straight, // Moves in straigth line;
+        Sine // Moves in sine;
     }
 
-    override public float Value(float time){
-        return pos;
-    }
-}
+    [SerializeField] Type typeX = Type.Static;
+    [SerializeField] Type typeZ = Type.Straight;
 
-public class TrajectoryLine: Trajectory
-{
-    // Linear speed of a trajectory
-    float speed;
+    [Tooltip("X amplitude (Sine only)")]
+    [SerializeField] float amplitudeX;
 
-    public TrajectoryLine(float s)
+    [Tooltip("Z amplitude (Sine only)")]
+    [SerializeField] float amplitudeZ;
+
+    [Tooltip("X starting phase (Sine only)")]
+    [SerializeField] float phaseX;
+
+    [Tooltip("Z starting phase (Sine only)")]
+    [SerializeField] float phaseZ;
+
+    [Tooltip("X speed")]
+    [SerializeField] float speedX;
+
+    [Tooltip("Z speed")]
+    [SerializeField] float speedZ;
+
+    // Returns position in trajectory after "time" seconds passed
+    public Vector3 Position(float time)
     {
-        speed = s;
+        return new Vector3(
+            Value(time, typeX, amplitudeX, phaseX, speedX),
+            0,
+            Value(time, typeZ, amplitudeZ, phaseZ, speedZ));
     }
 
-    override public float Value(float time){
-        return time * speed;
-    }
-}
-
-public class TrajectorySine: Trajectory
-{
-    // Offset of the sine
-    float offset;
-    // Amplitude of the sine
-    float amplitude;
-    // Starting phase of the sine (degrees)
-    float phase;
-    // Speed of the sine (argument multiplier)
-    float speed;
-
-    public TrajectorySine(float offset = 0f, float amp = 10f, float sp = 1f, float ph = 0f)
+    private float Value(float time, Type t, float amp, float ph, float spd)
     {
-        amplitude = amp;
-        speed = sp;
-        phase = ph;
-    }
-
-    override public float Value(float time){
-        return offset + (float)(amplitude * Math.Sin(time * Math.PI * 2 * speed + phase * Math.PI / 180f));
+        switch (t)
+        {
+        case Type.Sine:
+            return (float)(amp * Math.Sin(time * Math.PI * 2 * spd + ph * Math.PI / 180f));
+        case Type.Straight:
+            return spd * time;
+        default:
+        case Type.Static:
+            return 0;
+        }
     }
 }
 

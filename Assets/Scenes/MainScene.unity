@@ -5220,8 +5220,8 @@ MonoBehaviour:
   despawnZ: -10
   spawnInterval: 5
   enemyPrefabs:
-  - {fileID: 4615709194369804440, guid: 8b0d43385035fee46a0f1619ec927ec1, type: 3}
   - {fileID: 1244435000357657990, guid: f71d281845f283b40a087e5de917134f, type: 3}
+  - {fileID: 4615709194369804440, guid: 8b0d43385035fee46a0f1619ec927ec1, type: 3}
 --- !u!4 &1795445697
 Transform:
   m_ObjectHideFlags: 0

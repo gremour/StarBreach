@@ -66,6 +66,9 @@ public class Game : MonoBehaviour
         }
 
         var enemy = Instantiate<Enemy>(enemyPrefabs[enemyIndex], new Vector3(0, 0, spawnZ), Quaternion.identity);
+        var pos = enemy.transform.position;
+        pos.x = Random.Range(boundsMin.x * 0.8f, boundsMax.x * 0.8f);
+        enemy.transform.position = pos;
 
         enemyIndex++;
         if (enemyIndex >= enemyPrefabs.Count)

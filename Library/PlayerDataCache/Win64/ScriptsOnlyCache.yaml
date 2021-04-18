@@ -5,6 +5,7 @@ ScriptsOnlyBuild:
     - Game
     - Player
     - Projectile
+    - Trajectory
     Unity.2D.Sprite.Editor.dll:
     - UnityEditor.U2D.Sprites.SpriteEditorWindow
     Unity.Rider.Editor.dll:
@@ -12,10 +13,8 @@ ScriptsOnlyBuild:
     UnityEditor.Graphs.dll:
     - UnityEditor.Graphs.AnimationBlendTree.Graph
     - UnityEditor.Graphs.AnimationBlendTree.GraphGUI
-    - UnityEditor.Graphs.AnimationStateMachine.AnyStateNode
     - UnityEditor.Graphs.AnimationStateMachine.Graph
     - UnityEditor.Graphs.AnimationStateMachine.GraphGUI
-    - UnityEditor.Graphs.AnimationStateMachine.StateNode
     - UnityEditor.Graphs.AnimatorControllerTool
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
@@ -58,13 +57,15 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 2046}
+      Script: {instanceID: 2060}
     - Class: 114
-      Script: {instanceID: 3182}
+      Script: {instanceID: 2458}
     - Class: 114
-      Script: {instanceID: 3364}
+      Script: {instanceID: 3238}
     - Class: 114
-      Script: {instanceID: 3560}
+      Script: {instanceID: 3424}
+    - Class: 114
+      Script: {instanceID: 3628}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 135
@@ -296,6 +297,12 @@ ScriptsOnlyBuild:
     className: RawImage
   - hash:
       serializedVersion: 2
+      Hash: f4416c24e16c8c4fb941c438492d2f2d
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Trajectory
+  - hash:
+      serializedVersion: 2
       Hash: c3d3430df9e3ea95e3e3d587961390fb
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
@@ -524,7 +531,7 @@ ScriptsOnlyBuild:
     className: TouchInputModule
   - hash:
       serializedVersion: 2
-      Hash: 7903eb1fb1a29db61b57415c5739a500
+      Hash: f749393040ab10ef947d2818a47f046e
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Enemy
