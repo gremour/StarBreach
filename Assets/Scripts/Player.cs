@@ -1,12 +1,10 @@
-// using System.Collections;
-// using System.Collections.Generic;
 using UnityEngine;
 using System;
 
 public class Player : MonoBehaviour
 {
     [Tooltip("Blaster projectile prefab")]
-    [SerializeField] GameObject projectilePrefab;
+    [SerializeField] Projectile projectilePrefab;
 
     [Tooltip("Delay between subsequent blaster shots")]
     [SerializeField] float blasterDelay = 0.2f;
@@ -28,17 +26,13 @@ public class Player : MonoBehaviour
 
     // Game reference
     Game game;
+
     // Target ship rotation when moving
 
     float targetRotationAngle;
+
     // Remaining cooldown on blaster
     float blasterCooldown;
-
-    // Direction vectors
-    Vector3 dirLeft = new Vector3(-1, 0, 0);
-    Vector3 dirRight = new Vector3(1, 0, 0);
-    Vector3 dirForward = new Vector3(0, 0, 1);
-    Vector3 dirBack = new Vector3(0, 0, -1);
 
     // Start is called before the first frame update
     void Start()
@@ -74,19 +68,19 @@ public class Player : MonoBehaviour
         // Move the ship
         if (movingForward)
         {
-            Move(dirForward * maneurability * Time.deltaTime);
+            Move(Game.dirForward * maneurability * Time.deltaTime);
         }
         if (movingBack)
         {
-            Move(dirBack * maneurability * Time.deltaTime);
+            Move(Game.dirBack * maneurability * Time.deltaTime);
         }
         if (movingLeft)
         {
-            Move(dirLeft * maneurability * Time.deltaTime);
+            Move(Game.dirLeft * maneurability * Time.deltaTime);
         }
         if (movingRight)
         {
-            Move(dirRight * maneurability * Time.deltaTime);
+            Move(Game.dirRight * maneurability * Time.deltaTime);
         }
         LimitPositionToBounds();
 
@@ -104,9 +98,8 @@ public class Player : MonoBehaviour
         }
 
         var shooting = Input.GetKey("x") || Input.GetKey(KeyCode.Space);
-        if (shooting && blasterCooldown <= 0f)
+        if (shooting)
         {
-            blasterCooldown = blasterDelay;
             Shoot();
         }
 
@@ -114,13 +107,29 @@ public class Player : MonoBehaviour
 
     void Shoot()
     {
+        if (blasterCooldown > 0f)
+        {
+            return;
+        }
+        blasterCooldown = blasterDelay;
+
         if (projectilePrefab == null)
         {
             Debug.Log("Projectile prefab is uninitialized");
             return;
         }
-        Instantiate(projectilePrefab, transform.position + dirForward * blasterFrontMount + dirLeft * blasterSideMount, Quaternion.identity);
-        Instantiate(projectilePrefab, transform.position + dirForward * blasterFrontMount + dirRight * blasterSideMount, Quaternion.identity);
+        spawnProjectile(Game.dirForward * blasterFrontMount + Game.dirLeft * blasterSideMount);
+        spawnProjectile(Game.dirForward * blasterFrontMount + Game.dirRight * blasterSideMount);
+    }
+
+    // Spaw projectile at delta position relative to player position
+    void spawnProjectile(Vector3 delta)
+    {
+        var p = Instantiate<Projectile>(
+            projectilePrefab, 
+            transform.position +delta, 
+            Quaternion.identity);
+        p.isPlayerProjectile = true;
     }
 
     // Update ship rotation due to movement
