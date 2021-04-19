@@ -3,6 +3,9 @@ using System;
 
 public class Player : MonoBehaviour
 {
+    [Tooltip("Hull integrity points (player only lose them by 1)")]
+    [SerializeField] int maxIntegrity = 3;
+
     [Tooltip("Blaster projectile prefab")]
     [SerializeField] Projectile projectilePrefab;
 
@@ -26,6 +29,9 @@ public class Player : MonoBehaviour
 
     // Game reference
     Game game;
+    HUD hud;
+
+    int integrity;
 
     // Target ship rotation when moving
 
@@ -37,12 +43,19 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        game = Game.instance;
+        game = GameObject.Find("Game").GetComponent<Game>();
+        hud = GameObject.Find("HUD").GetComponent<HUD>();
+        integrity = maxIntegrity;
+        hud.SetPlayerHull(integrity);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (game.IsPaused())
+        {
+            return;
+        }
         ProcessCooldowns();
         ProcessInput();
         UpdateRotation();
@@ -113,11 +126,6 @@ public class Player : MonoBehaviour
         }
         blasterCooldown = blasterDelay;
 
-        if (projectilePrefab == null)
-        {
-            Debug.Log("Projectile prefab is uninitialized");
-            return;
-        }
         spawnProjectile(Game.dirForward * blasterFrontMount + Game.dirLeft * blasterSideMount);
         spawnProjectile(Game.dirForward * blasterFrontMount + Game.dirRight * blasterSideMount);
     }

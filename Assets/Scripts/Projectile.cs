@@ -17,13 +17,25 @@ public class Projectile : MonoBehaviour
     [Tooltip("Amount of chaotic rotation")]
     [SerializeField] public float chaoticRotation = 0f;
 
+    Game game;
+
     public bool isPlayerProjectile;
 
     float aliveTime;
 
+    void Start()
+    {
+        game = GameObject.Find("Game").GetComponent<Game>();
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if (game.IsPaused())
+        {
+            return;
+        }
+
         if (chaoticRotation != 0f) {
             var axis = Random.Range(0, 2);
             Vector3 drot;

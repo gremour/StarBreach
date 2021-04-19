@@ -19,6 +19,7 @@ public class Enemy : MonoBehaviour
     // Game reference
     Game game;
 
+    // Hull integrity
     private int integrity;
 
     // Spawn time point;
@@ -35,9 +36,9 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        game = Game.instance;
+        game = GameObject.Find("Game").GetComponent<Game>();
         integrity = maxIntegrity;
-        timeSpawn = Time.time;
+        timeSpawn = game.GameTime();
         initialPos = transform.position;
         initialRot = transform.rotation;
         var hb = GetComponentInChildren<Healthbar>();
@@ -52,6 +53,11 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (game.IsPaused())
+        {
+            return;
+        }
+
         if (transform.position.z < game.despawnZ)
         {
             Terminate();
@@ -64,16 +70,11 @@ public class Enemy : MonoBehaviour
 
     void Move()
     {
-        if (trajectoryPrefab == null)
-        {
-            Debug.Log("Enemy trajectory prefab is null");
-            return;
-        }
         // Make dead enemy stop
         if (dead) {
             return;
         }
-        var dt = Time.time - timeSpawn;
+        var dt = game.GameTime() - timeSpawn;
         var traj = trajectoryPrefab.Position(dt);
         transform.position = initialPos + traj;
     }
@@ -86,11 +87,6 @@ public class Enemy : MonoBehaviour
         }
         blasterCooldown = blasterDelay;
 
-        if (projectilePrefab == null)
-        {
-            Debug.Log("Projectile prefab is uninitialized");
-            return;
-        }
         Instantiate<Projectile>(
             projectilePrefab,
             transform.position + projectilePrefab.dir * 2,
@@ -111,11 +107,6 @@ public class Enemy : MonoBehaviour
         if (playerProjectileCollision)
         {
             var proj = other.gameObject.GetComponent<Projectile>();
-            if (proj == null)
-            {
-                Debug.Log("No projectile component found in player projectile collision");
-                return;
-            }
             integrity -= proj.damage;
             Destroy(other.gameObject, 0.01f);
         }
