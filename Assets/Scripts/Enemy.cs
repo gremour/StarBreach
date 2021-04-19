@@ -3,7 +3,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [Tooltip("Hull integrity points")]
-    [SerializeField] int intergrity = 15;
+    [SerializeField] int maxIntegrity = 15;
 
     [Tooltip("Score value")]
     [SerializeField] int score = 10;
@@ -18,6 +18,8 @@ public class Enemy : MonoBehaviour
 
     // Game reference
     Game game;
+
+    private int integrity;
 
     // Spawn time point;
     float timeSpawn;
@@ -34,9 +36,17 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         game = Game.instance;
+        integrity = maxIntegrity;
         timeSpawn = Time.time;
         initialPos = transform.position;
         initialRot = transform.rotation;
+        var hb = GetComponentInChildren<Healthbar>();
+        if (hb != null)
+        {
+            hb.maximumValue = maxIntegrity;
+            hb.SetValue(maxIntegrity);
+            hb.SetVisible(false);
+        }
     }
 
     // Update is called once per frame
@@ -66,7 +76,6 @@ public class Enemy : MonoBehaviour
         var dt = Time.time - timeSpawn;
         var traj = trajectoryPrefab.Position(dt);
         transform.position = initialPos + traj;
-        Debug.Log("trajectory=" + traj);
     }
 
     void Shoot()
@@ -107,17 +116,24 @@ public class Enemy : MonoBehaviour
                 Debug.Log("No projectile component found in player projectile collision");
                 return;
             }
-            intergrity -= proj.damage;
+            integrity -= proj.damage;
             Destroy(other.gameObject, 0.01f);
         }
         else if (playerCollision)
         {
-            intergrity = 0;
+            integrity = 0;
         }
 
-        if (intergrity <= 0)
+        if (integrity <= 0)
         {
             Terminate(true);
+        }
+
+        var hb = GetComponentInChildren<Healthbar>();
+        if (hb != null)
+        {
+            hb.SetValue(integrity);
+            hb.SetVisible(integrity > 0 && integrity < maxIntegrity);
         }
     }
 

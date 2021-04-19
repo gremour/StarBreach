@@ -37,10 +37,11 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Projectile.cs" />
+     <Compile Include="Assets\Scripts\Trajectory.cs" />
      <Compile Include="Assets\Scripts\Game.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
      <Compile Include="Assets\Scripts\Enemy.cs" />
-     <Compile Include="Assets\Scripts\Trajectory.cs" />
+     <Compile Include="Assets\Scripts\Healthbar.cs" />
     <Reference Include="UnityEngine">
         <HintPath>F:/Programs/Unity/2020.3.3f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>
@@ -625,6 +626,9 @@
     </Reference>
     <Reference Include="Unity.TextMeshPro">
         <HintPath>F:/creat/Unity/StarBreach/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.Sprite.Editor">
+        <HintPath>F:/creat/Unity/StarBreach/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
         <HintPath>F:/creat/Unity/StarBreach/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
