@@ -61,6 +61,39 @@ public class Player : MonoBehaviour
         UpdateRotation();
     }
 
+    void OnCollisionEnter(Collision other) {
+        var projectileCollision = other.gameObject.tag == "Projectile";
+        var enemyCollision = other.gameObject.tag == "Enemy";
+        if (projectileCollision)
+        {
+            Destroy(other.gameObject, 0.01f);
+        }
+        if (projectileCollision || enemyCollision) 
+        {
+            TakeDamage(1);
+        }
+    }
+
+    void TakeDamage(int amount)
+    {
+        integrity -= amount;
+        if (integrity < 0)
+        {
+            integrity = 0;
+        }
+        hud.SetPlayerHull(integrity);
+        if (integrity == 0)
+        {
+            Terminate(true);
+        }
+    }
+
+    void Terminate(bool explode = false)
+    {
+        Destroy(gameObject, 0.01f);
+        game.End();
+    }
+
     // Process ship cooldowns
     void ProcessCooldowns()
     {
@@ -126,12 +159,12 @@ public class Player : MonoBehaviour
         }
         blasterCooldown = blasterDelay;
 
-        spawnProjectile(Game.dirForward * blasterFrontMount + Game.dirLeft * blasterSideMount);
-        spawnProjectile(Game.dirForward * blasterFrontMount + Game.dirRight * blasterSideMount);
+        SpawnProjectile(Game.dirForward * blasterFrontMount + Game.dirLeft * blasterSideMount);
+        SpawnProjectile(Game.dirForward * blasterFrontMount + Game.dirRight * blasterSideMount);
     }
 
     // Spaw projectile at delta position relative to player position
-    void spawnProjectile(Vector3 delta)
+    void SpawnProjectile(Vector3 delta)
     {
         var p = Instantiate<Projectile>(
             projectilePrefab, 

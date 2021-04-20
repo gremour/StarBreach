@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Game : MonoBehaviour
 {
@@ -48,17 +49,16 @@ public class Game : MonoBehaviour
         continueButton = mainMenu.transform.Find("ContinueButton").GetComponent<Button>();
         continueButton.interactable = false;
         mainMenu.SetActive(true);
+        hud.gameObject.SetActive(false);
     }
 
     public void New()
     {
-        if (player != null) 
-        {
-            Destroy(player.gameObject, 0.01f);
-        }
+        Cleanup();
 
         over = false;
         player = Instantiate<Player>(playerPrefab, Vector3.zero, Quaternion.identity);
+        hud.gameObject.SetActive(true);
         Continue();
     }
 
@@ -97,6 +97,26 @@ public class Game : MonoBehaviour
         return over;
     }
 
+    void Cleanup()
+    {
+        var projectiles = GameObject.FindObjectsOfType<Projectile>();
+        foreach (Projectile p in projectiles)
+        {
+            Destroy(p.gameObject, 0.01f);
+        }
+        var enemies = GameObject.FindObjectsOfType<Enemy>();
+        foreach (Enemy e in enemies)
+        {
+            Destroy(e.gameObject, 0.01f);
+        }
+        if (player != null)
+        {
+            Destroy(player.gameObject, 0.01f);
+            player = null;
+        }
+    }
+
+
     // Return game time (not affected by pause)
     public float GameTime()
     {
@@ -128,12 +148,16 @@ public class Game : MonoBehaviour
             return;
         }
 
-        if (over || paused)
+        if (paused)
         {
             return;
         }
         gameTime += Time.deltaTime;
 
+        if (over)
+        {
+            return;
+        }
         if (timeToSpawn <= 0)
         {
             Spawn();
