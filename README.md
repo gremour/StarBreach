@@ -18,7 +18,7 @@ Bullet Hell game. Unity project to hone up Unity & C# skills.
 - [ ] Invulnerability shield, would consume energy + animation;
 - [ ] Waves of enemies with random setup;
 - [ ] Menu option to switch between random seed and fixed seed waves;
-- [ ] Increase ewnemy strength per wave: movement speed, faster shooting,
+- [ ] Increase enemy strength per wave: movement speed, faster shooting,
 faster projectiles, more hp, more spawns;
 - [ ] Enemy guns: multiple projectile shooting in different directions;
 - [ ] Enemy guns burst mode (quick several projectiles with a delay between);
@@ -27,6 +27,7 @@ faster projectiles, more hp, more spawns;
 - [ ] More enemies: Swarmers, fast diagonal moving, etc.
 - [ ] Bosses;
 - [ ] Add better handmade models;
+- [ ] Add engine fire effect for player ship when mobing forward;
 - [ ] Powerups after each wave: 2 (or 3?) in the middle of the game field,
 able to pick only one.
 Powerup types: heart, hit invulnerability duration, energy recharge rate,
