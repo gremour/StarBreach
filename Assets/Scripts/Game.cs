@@ -135,6 +135,22 @@ public class Game : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+//         var shield = GameObject.Find("Shield");
+//         var anim = shield.GetComponent<Animator>();
+//         if (Input.GetKeyDown(KeyCode.Q))
+//         {
+//             anim.Play("ShieldPulse");
+//         }
+//         if (Input.GetKeyDown(KeyCode.W))
+//         {
+//             anim.Play("ShieldActive");
+// //            shield.GetComponent<SpriteRenderer>().color = Color.green;
+//         } else
+//         if (Input.GetKeyUp(KeyCode.W))
+//         {
+//             anim.Play("ShieldFaded");
+//         }
+
         if (Input.GetKeyDown(KeyCode.Escape) && !over)
         {
             if (paused)

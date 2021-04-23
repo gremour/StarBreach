@@ -19,6 +19,11 @@ public class Enemy : MonoBehaviour
     // Game reference
     Game game;
 
+    // Shield animator reference
+    Animator shieldAnim;
+    // Explosion animator reference
+    Animator explosionAnim;
+
     // Hull integrity
     private int integrity;
 
@@ -37,6 +42,8 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         game = GameObject.Find("Game").GetComponent<Game>();
+        shieldAnim = transform.Find("Shield").GetComponent<Animator>();
+        explosionAnim = transform.Find("Explosion").GetComponent<Animator>();
         integrity = maxIntegrity;
         timeSpawn = game.GameTime();
         initialPos = transform.position;
@@ -109,6 +116,10 @@ public class Enemy : MonoBehaviour
             var proj = other.gameObject.GetComponent<Projectile>();
             integrity -= proj.damage;
             Destroy(other.gameObject, 0.01f);
+            if (integrity > 0)
+            {
+                shieldAnim.Play("ShieldPulse");
+            }
         }
         else if (playerCollision)
         {
@@ -134,8 +145,7 @@ public class Enemy : MonoBehaviour
         if (explode)
         {
             Destroy(gameObject, 1f);
-            GetComponentInChildren<Animator>().enabled = true;
-            GetComponentInChildren<SpriteRenderer>().enabled = true;
+            explosionAnim.Play("Explode");
         } 
         else
         {

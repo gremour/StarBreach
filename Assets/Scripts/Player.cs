@@ -6,6 +6,9 @@ public class Player : MonoBehaviour
     [Tooltip("Hull integrity points (player only lose them by 1)")]
     [SerializeField] int maxIntegrity = 3;
 
+    [Tooltip("Invulnerability window when take damage, seconds")]
+    [SerializeField] float invulWindow = 1;
+
     [Tooltip("Blaster projectile prefab")]
     [SerializeField] Projectile projectilePrefab;
 
@@ -29,12 +32,21 @@ public class Player : MonoBehaviour
 
     // Game reference
     Game game;
+    // Heads up display reference
     HUD hud;
+    // Shield animator reference
+    Animator shieldAnim;
+    // Shield sprite renderer reference
+    SpriteRenderer shieldSprite;
+    // Explosion animator reference
+    Animator explosionAnim;
 
+    // Current hull integrity (player only lose them by 1)
     int integrity;
+    // Time ship is still invulnerable after hit
+    float invulTime;
 
     // Target ship rotation when moving
-
     float targetRotationAngle;
 
     // Remaining cooldown on blaster
@@ -45,6 +57,9 @@ public class Player : MonoBehaviour
     {
         game = GameObject.Find("Game").GetComponent<Game>();
         hud = GameObject.Find("HUD").GetComponent<HUD>();
+        shieldSprite = transform.Find("Shield").GetComponent<SpriteRenderer>();
+        shieldAnim = transform.Find("Shield").GetComponent<Animator>();
+        explosionAnim = transform.Find("Explosion").GetComponent<Animator>();
         integrity = maxIntegrity;
         hud.SetPlayerHull(integrity);
     }
@@ -76,6 +91,10 @@ public class Player : MonoBehaviour
 
     void TakeDamage(int amount)
     {
+        if (invulTime > 0)
+        {
+            return;
+        }
         integrity -= amount;
         if (integrity < 0)
         {
@@ -85,12 +104,17 @@ public class Player : MonoBehaviour
         if (integrity == 0)
         {
             Terminate(true);
+        } else {
+            invulTime = invulWindow;
+            shieldSprite.color = new Color(1f, 0.5f, 0f, 1f);
+            shieldAnim.Play("ShieldActive");
         }
     }
 
     void Terminate(bool explode = false)
     {
-        Destroy(gameObject, 0.01f);
+        Destroy(gameObject, 1f);
+        explosionAnim.Play("Explode");
         game.End();
     }
 
@@ -101,15 +125,25 @@ public class Player : MonoBehaviour
         if (blasterCooldown < 0 ) {
             blasterCooldown = 0;
         }
+        var invul = invulTime > 0;
+        if (invul)
+        {
+            invulTime -= Time.deltaTime;
+        }
+        if (invul && invulTime <= 0)
+        {
+            invulTime = 0;
+            shieldAnim.Play("ShieldFaded");
+        }
     }
 
     // Process player input
     void ProcessInput()
     {
-        var movingForward = Input.GetKey("w") || Input.GetKey(KeyCode.UpArrow);
-        var movingBack = Input.GetKey("s")|| Input.GetKey(KeyCode.DownArrow);
-        var movingLeft = Input.GetKey("a") || Input.GetKey(KeyCode.LeftArrow);
-        var movingRight = Input.GetKey("d") || Input.GetKey(KeyCode.RightArrow);
+        var movingForward = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow);
+        var movingBack = Input.GetKey(KeyCode.S)|| Input.GetKey(KeyCode.DownArrow);
+        var movingLeft = Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow);
+        var movingRight = Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow);
 
         // Move the ship
         if (movingForward)
@@ -143,7 +177,7 @@ public class Player : MonoBehaviour
             targetRotationAngle = 0;
         }
 
-        var shooting = Input.GetKey("x") || Input.GetKey(KeyCode.Space);
+        var shooting = Input.GetKey(KeyCode.Z) || Input.GetKey(KeyCode.Space);
         if (shooting)
         {
             Shoot();
