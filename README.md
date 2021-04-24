@@ -6,7 +6,7 @@ Bullet Hell game. Unity project to hone up Unity & C# skills.
 
 - Arrows or WASD: move;
 - Z or Space: shoot;
-- Shift: shield (TODO);
+- Shift: shield;
 - Esc: menu.
 
 # TODO

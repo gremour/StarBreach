@@ -136,7 +136,9 @@ public class Game : MonoBehaviour
     void Cleanup()
     {
         score = 0;
+        multiplier = 1;
         hud.SetScore(score);
+        hud.SetMultiplier(multiplier);
         var projectiles = GameObject.FindObjectsOfType<Projectile>();
         foreach (Projectile p in projectiles)
         {

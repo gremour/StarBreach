@@ -10,8 +10,6 @@ ScriptsOnlyBuild:
     - Player
     - Projectile
     - Trajectory
-    Unity.2D.Sprite.Editor.dll:
-    - UnityEditor.U2D.Sprites.SpriteEditorWindow
     Unity.Rider.Editor.dll:
     - Packages.Rider.Editor.UnitTesting.CallbackData
     Unity.TextMeshPro.dll:
@@ -23,10 +21,8 @@ ScriptsOnlyBuild:
     UnityEditor.Graphs.dll:
     - UnityEditor.Graphs.AnimationBlendTree.Graph
     - UnityEditor.Graphs.AnimationBlendTree.GraphGUI
-    - UnityEditor.Graphs.AnimationStateMachine.AnyStateNode
     - UnityEditor.Graphs.AnimationStateMachine.Graph
     - UnityEditor.Graphs.AnimationStateMachine.GraphGUI
-    - UnityEditor.Graphs.AnimationStateMachine.StateNode
     - UnityEditor.Graphs.AnimatorControllerTool
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
@@ -530,7 +526,7 @@ ScriptsOnlyBuild:
     className: TMP_SpriteAnimator
   - hash:
       serializedVersion: 2
-      Hash: 86b2f40d9d62b46a059a6a9aa6a8733d
+      Hash: 36acf9f0508ce83311057e58a310ae3f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Game
@@ -548,7 +544,7 @@ ScriptsOnlyBuild:
     className: StandaloneInputModule
   - hash:
       serializedVersion: 2
-      Hash: ee6568e5949f587f60f6b75e64ecd1c5
+      Hash: 89f7f8bf1a8492bd74b1776820d41591
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Player
