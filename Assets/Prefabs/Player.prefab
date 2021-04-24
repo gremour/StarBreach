@@ -129,7 +129,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.7
+  m_Radius: 1
   m_Center: {x: 0, y: 0.82, z: 0}
 --- !u!114 &7816011894903829139
 MonoBehaviour:
@@ -143,14 +143,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30bf9c01731af164fb9cee55d2242a5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxIntegrity: 3
-  projectilePrefab: {fileID: -734330617599527622, guid: feea37e83908c6244bf89bf6b75ba178, type: 3}
-  blasterDelay: 0.2
+  blasterDelay: 0.35
+  blasterConsumption: 15
   blasterSideMount: 0.8
   blasterFrontMount: 1
+  energyRecharge: 20
+  shieldConsumption: 50
+  maxIntegrity: 3
+  invulWindow: 1
   maneurability: 10
-  maxRotationAngle: 45
+  maxRotationAngle: 30
   rotationSpeed: 180
+  projectilePrefab: {fileID: -734330617599527622, guid: feea37e83908c6244bf89bf6b75ba178, type: 3}
+  activeShieldColor: {r: 0.3, g: 0.6, b: 1, a: 1}
+  invulShieldColor: {r: 1, g: 0.5, b: 0, a: 1}
 --- !u!54 &7816011894903829150
 Rigidbody:
   m_ObjectHideFlags: 0

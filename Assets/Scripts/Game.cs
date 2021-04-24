@@ -14,6 +14,12 @@ public class Game : MonoBehaviour
     [Tooltip("List of enemy prefabs")]
     [SerializeField] public List<Enemy> enemyPrefabs;
 
+    [Tooltip("Multiplier decay in seconds")]
+    [SerializeField] public float multiplierDecay = 5f;
+
+    [Tooltip("Multiplier decay acceleration, percent per multiplier value")]
+    [SerializeField] public float multiplierDecayAccel = 3f;
+
     [Tooltip("Left bottom bound of game field")]
     [SerializeField] public Vector3 boundsMin = new Vector3(-15, 0, 0);
 
@@ -33,6 +39,11 @@ public class Game : MonoBehaviour
     static public Vector3 dirRight = new Vector3(1, 0, 0);
     static public Vector3 dirForward = new Vector3(0, 0, 1);
     static public Vector3 dirBack = new Vector3(0, 0, -1);
+
+    int score;
+    int hiScore;
+    int multiplier = 1;
+    float multiplierTime;
 
     float gameTime;
     bool over = true;
@@ -59,6 +70,7 @@ public class Game : MonoBehaviour
         over = false;
         player = Instantiate<Player>(playerPrefab, Vector3.zero, Quaternion.identity);
         hud.gameObject.SetActive(true);
+        hud.SetGameOver(false);
         Continue();
     }
 
@@ -66,7 +78,13 @@ public class Game : MonoBehaviour
     {
         over = true;
         continueButton.interactable = false;
-        mainMenu.SetActive(true);
+        if (score > hiScore)
+        {
+            hiScore = score;
+        }
+        hud.SetHiScore(hiScore);
+        hud.SetNewHiScore(score >= hiScore);
+        hud.SetGameOver(true);
     }
 
     public void Continue()
@@ -80,6 +98,7 @@ public class Game : MonoBehaviour
     {
         paused = true;
         mainMenu.SetActive(true);
+        hud.SetGameOver(false);
     }
 
     public void Quit()
@@ -97,8 +116,27 @@ public class Game : MonoBehaviour
         return over;
     }
 
+    public void AddScore(int sc)
+    {
+        score += sc * multiplier;
+        hud.SetScore(score);
+        if (multiplierTime > 0 || multiplier == 1)
+        {
+            multiplier++;
+        }
+        RefreshMultiplierDecay();
+    }
+
+    void RefreshMultiplierDecay()
+    {
+        multiplierTime = multiplierDecay * (1f - (multiplier - 1) * (multiplierDecayAccel / 100f));
+        hud.SetMultiplier(multiplier);
+    }
+
     void Cleanup()
     {
+        score = 0;
+        hud.SetScore(score);
         var projectiles = GameObject.FindObjectsOfType<Projectile>();
         foreach (Projectile p in projectiles)
         {
@@ -135,25 +173,9 @@ public class Game : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-//         var shield = GameObject.Find("Shield");
-//         var anim = shield.GetComponent<Animator>();
-//         if (Input.GetKeyDown(KeyCode.Q))
-//         {
-//             anim.Play("ShieldPulse");
-//         }
-//         if (Input.GetKeyDown(KeyCode.W))
-//         {
-//             anim.Play("ShieldActive");
-// //            shield.GetComponent<SpriteRenderer>().color = Color.green;
-//         } else
-//         if (Input.GetKeyUp(KeyCode.W))
-//         {
-//             anim.Play("ShieldFaded");
-//         }
-
-        if (Input.GetKeyDown(KeyCode.Escape) && !over)
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (paused)
+            if (paused && !over)
             {
                 Continue();
             }
@@ -181,6 +203,18 @@ public class Game : MonoBehaviour
         }
 
         timeToSpawn -= Time.deltaTime;
+
+        multiplierTime -= Time.deltaTime;
+        if (multiplierTime < 0 && multiplier > 1)
+        {
+            multiplier--;
+            RefreshMultiplierDecay();
+        }
+        if (multiplier == 1)
+        {
+            multiplierTime = 0;
+        }
+        hud.SetMultiplierBar(multiplierTime/multiplierDecay);
     }
 
     void Spawn()

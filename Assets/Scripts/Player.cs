@@ -3,23 +3,29 @@ using System;
 
 public class Player : MonoBehaviour
 {
-    [Tooltip("Hull integrity points (player only lose them by 1)")]
-    [SerializeField] int maxIntegrity = 3;
-
-    [Tooltip("Invulnerability window when take damage, seconds")]
-    [SerializeField] float invulWindow = 1;
-
-    [Tooltip("Blaster projectile prefab")]
-    [SerializeField] Projectile projectilePrefab;
-
     [Tooltip("Delay between subsequent blaster shots")]
-    [SerializeField] float blasterDelay = 0.2f;
+    [SerializeField] float blasterDelay = 0.35f;
+
+    [Tooltip("Blaster energy consumption per shot")]
+    [SerializeField] float blasterConsumption = 15f;
 
     [Tooltip("Distance from ship center to side for projectile spawn point")]
     [SerializeField] float blasterSideMount = 0.8f;
 
     [Tooltip("Distance from ship center to front for projectile spawn point")]
     [SerializeField] float blasterFrontMount = 1f;
+
+    [Tooltip("Energy recharge rate, percent per second")]
+    [SerializeField] float energyRecharge = 20f;
+
+    [Tooltip("Active shield energy consumption, percent per second")]
+    [SerializeField] float shieldConsumption = 50f;
+
+    [Tooltip("Hull integrity points (player only lose them by 1)")]
+    [SerializeField] int maxIntegrity = 3;
+
+    [Tooltip("Invulnerability window when take damage, seconds")]
+    [SerializeField] float invulWindow = 1;
 
     [Tooltip("Distance ship is moving per second in world coords")]
     [SerializeField] float maneurability = 10;
@@ -29,6 +35,15 @@ public class Player : MonoBehaviour
 
     [Tooltip("Rotation speed in degrees per second")]
     [SerializeField] float rotationSpeed = 180;
+
+    [Tooltip("Blaster projectile prefab")]
+    [SerializeField] Projectile projectilePrefab;
+
+    [Tooltip("Shield color when player activates it")]
+    [SerializeField] Color activeShieldColor = new Color(0.3f, 0.6f, 1f, 1f);
+
+    [Tooltip("invulnerability shield color")]
+    [SerializeField] Color invulShieldColor = new Color(1f, 0.5f, 0f, 1f);
 
     // Game reference
     Game game;
@@ -45,12 +60,17 @@ public class Player : MonoBehaviour
     int integrity;
     // Time ship is still invulnerable after hit
     float invulTime;
+    // Player is actively shielding
+    bool shielding;
 
-    // Target ship rotation when moving
-    float targetRotationAngle;
+    // Current ship energy (0 to 1)
+    float energy = 1;
 
     // Remaining cooldown on blaster
     float blasterCooldown;
+
+    // Target ship rotation when moving
+    float targetRotationAngle;
 
     // Start is called before the first frame update
     void Start()
@@ -74,6 +94,7 @@ public class Player : MonoBehaviour
         ProcessCooldowns();
         ProcessInput();
         UpdateRotation();
+        hud.SetEnergy(energy);
     }
 
     void OnCollisionEnter(Collision other) {
@@ -91,7 +112,7 @@ public class Player : MonoBehaviour
 
     void TakeDamage(int amount)
     {
-        if (invulTime > 0)
+        if (invulTime > 0 || shielding)
         {
             return;
         }
@@ -106,7 +127,7 @@ public class Player : MonoBehaviour
             Terminate(true);
         } else {
             invulTime = invulWindow;
-            shieldSprite.color = new Color(1f, 0.5f, 0f, 1f);
+            shieldSprite.color = invulShieldColor;
             shieldAnim.Play("ShieldActive");
         }
     }
@@ -121,19 +142,50 @@ public class Player : MonoBehaviour
     // Process ship cooldowns
     void ProcessCooldowns()
     {
+        // Recharge energy
+        energy += Time.deltaTime * energyRecharge / 100f;
+        if (energy > 1)
+        {
+            energy = 1;
+        }
+
+        // Recharge blaster
         blasterCooldown -= Time.deltaTime;
         if (blasterCooldown < 0 ) {
             blasterCooldown = 0;
         }
+
+        // Process invulnerability
         var invul = invulTime > 0;
         if (invul)
         {
             invulTime -= Time.deltaTime;
         }
+
+        // Stop invulnerability
         if (invul && invulTime <= 0)
         {
             invulTime = 0;
-            shieldAnim.Play("ShieldFaded");
+            if (shielding)
+            {
+                shieldSprite.color = activeShieldColor;
+            }
+            else
+            {
+                shieldAnim.Play("ShieldFaded");
+            }
+        }
+
+        // Process shielding energy consumption
+        var cost = shieldConsumption * Time.deltaTime / 100f;
+        if (energy <= cost)
+        {
+            Shielding(false);
+        }
+        else
+        if (!invul && shielding)
+        {
+            energy -= shieldConsumption * Time.deltaTime / 100f;
         }
     }
 
@@ -183,14 +235,24 @@ public class Player : MonoBehaviour
             Shoot();
         }
 
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            Shielding(true);
+        }
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            Shielding(false);
+        }
     }
 
     void Shoot()
     {
-        if (blasterCooldown > 0f)
+        var cost = blasterConsumption / 100f;
+        if (blasterCooldown > 0f || energy < cost)
         {
             return;
         }
+        energy -= cost;
         blasterCooldown = blasterDelay;
 
         SpawnProjectile(Game.dirForward * blasterFrontMount + Game.dirLeft * blasterSideMount);
@@ -258,6 +320,27 @@ public class Player : MonoBehaviour
         if (pos != transform.position)
         {
             transform.position = pos;
+        }
+    }
+
+    void Shielding(bool start)
+    {
+        if (start)
+        {
+            shielding = true;
+            if (invulTime <= 0)
+            {
+                shieldSprite.color = activeShieldColor;
+                shieldAnim.Play("ShieldActive");
+            }
+        } 
+        else
+        {
+            shielding = false;
+            if (invulTime <= 0)
+            {
+                shieldAnim.Play("ShieldFaded");
+            }
         }
     }
 }

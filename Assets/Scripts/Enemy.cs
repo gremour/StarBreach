@@ -60,6 +60,11 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (dead)
+        {
+            return;
+        }
+
         if (game.IsPaused())
         {
             return;
@@ -109,6 +114,11 @@ public class Enemy : MonoBehaviour
     }
 
     void OnCollisionEnter(Collision other) {
+        if (dead)
+        {
+            return;
+        }
+
         var playerCollision = other.gameObject.tag == "Player";
         var playerProjectileCollision = other.gameObject.tag == "PlayerProjectile";
         if (playerProjectileCollision)
@@ -146,6 +156,7 @@ public class Enemy : MonoBehaviour
         {
             Destroy(gameObject, 1f);
             explosionAnim.Play("Explode");
+            game.AddScore(score);
         } 
         else
         {
