@@ -50,4 +50,4 @@ MonoBehaviour:
   phaseX: 0
   phaseZ: 0
   speedX: 0
-  speedZ: -5
+  speedZ: 3

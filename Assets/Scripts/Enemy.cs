@@ -35,11 +35,11 @@ public class Enemy : MonoBehaviour
 
     Vector3 initialPos;
     Quaternion initialRot;
+    public Trajectory trajectory;
 
     bool dead;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         game = GameObject.Find("Game").GetComponent<Game>();
         shieldAnim = transform.Find("Shield").GetComponent<Animator>();
@@ -48,6 +48,7 @@ public class Enemy : MonoBehaviour
         timeSpawn = game.GameTime();
         initialPos = transform.position;
         initialRot = transform.rotation;
+        trajectory = Instantiate<Trajectory>(trajectoryPrefab);
         var hb = GetComponentInChildren<Healthbar>();
         if (hb != null)
         {
@@ -87,8 +88,8 @@ public class Enemy : MonoBehaviour
             return;
         }
         var dt = game.GameTime() - timeSpawn;
-        var traj = trajectoryPrefab.Position(dt);
-        transform.position = initialPos + traj;
+        var trajPos = trajectory.Position(dt);
+        transform.position = initialPos + trajPos;
     }
 
     void Shoot()

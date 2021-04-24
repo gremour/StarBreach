@@ -143,14 +143,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30bf9c01731af164fb9cee55d2242a5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blasterDelay: 0.35
+  blasterDelay: 0.25
   blasterConsumption: 15
   blasterSideMount: 0.8
   blasterFrontMount: 1
   energyRecharge: 20
   shieldConsumption: 50
   maxIntegrity: 3
-  invulWindow: 1
+  invulWindow: 2
   maneurability: 10
   maxRotationAngle: 30
   rotationSpeed: 180

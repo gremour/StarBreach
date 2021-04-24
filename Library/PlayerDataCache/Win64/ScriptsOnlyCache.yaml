@@ -620,6 +620,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TextContainer
+  - hash:
+      serializedVersion: 2
+      Hash: 302141839db227cc984a81bc752cf889
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Wave
   platform: 19
   scenePathNames:
   - Assets/Scenes/MainScene.unity

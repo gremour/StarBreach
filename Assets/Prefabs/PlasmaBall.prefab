@@ -108,8 +108,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63243801945abcf46bd6f30f386eeda3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damage: 5
   dir: {x: 0, y: 0, z: -1}
-  velocity: 8
+  velocity: 12
   ttl: 5
   chaoticRotation: 180
   isPlayerProjectile: 0

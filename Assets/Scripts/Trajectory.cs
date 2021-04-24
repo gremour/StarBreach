@@ -6,33 +6,36 @@ using System;
 // to calculate actual position.
 public class Trajectory : MonoBehaviour
 {
-    enum Type
+    public enum Type
     {
         Static, // Always 0;
         Straight, // Moves in straigth line;
         Sine // Moves in sine;
     }
 
-    [SerializeField] Type typeX = Type.Static;
-    [SerializeField] Type typeZ = Type.Straight;
+    [Tooltip("Type of trajectory on X axis")]
+    [SerializeField] public Type typeX = Type.Static;
 
     [Tooltip("X amplitude (Sine only)")]
-    [SerializeField] float amplitudeX;
+    [SerializeField] public float amplitudeX;
 
-    [Tooltip("Z amplitude (Sine only)")]
-    [SerializeField] float amplitudeZ;
-
-    [Tooltip("X starting phase (Sine only)")]
-    [SerializeField] float phaseX;
-
-    [Tooltip("Z starting phase (Sine only)")]
-    [SerializeField] float phaseZ;
+    [Tooltip("X starting phase, degrees (Sine only)")]
+    [SerializeField] public float phaseX;
 
     [Tooltip("X speed")]
-    [SerializeField] float speedX;
+    [SerializeField] public float speedX;
+
+    [Tooltip("Type of trajectory on Z axis")]
+    [SerializeField] public Type typeZ = Type.Straight;
+
+    [Tooltip("Z amplitude (Sine only)")]
+    [SerializeField] public float amplitudeZ;
+
+    [Tooltip("Z starting phase, degrees (Sine only)")]
+    [SerializeField] public float phaseZ;
 
     [Tooltip("Z speed")]
-    [SerializeField] float speedZ;
+    [SerializeField] public float speedZ;
 
     // Returns position in trajectory after "time" seconds passed
     public Vector3 Position(float time)

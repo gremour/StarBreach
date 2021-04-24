@@ -49,5 +49,5 @@ MonoBehaviour:
   amplitudeZ: 0
   phaseX: 0
   phaseZ: 0
-  speedX: 0.2
-  speedZ: -5
+  speedX: 1
+  speedZ: 2

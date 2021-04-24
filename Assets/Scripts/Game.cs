@@ -1,7 +1,7 @@
-using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
+using TMPro;
 
 public class Game : MonoBehaviour
 {
@@ -11,8 +11,8 @@ public class Game : MonoBehaviour
     [Tooltip("Player prefab")]
     [SerializeField] public Player playerPrefab;
 
-    [Tooltip("List of enemy prefabs")]
-    [SerializeField] public List<Enemy> enemyPrefabs;
+    [Tooltip("Wave")]
+    [SerializeField] public Wave wave;
 
     [Tooltip("Multiplier decay in seconds")]
     [SerializeField] public float multiplierDecay = 5f;
@@ -32,8 +32,6 @@ public class Game : MonoBehaviour
     [Tooltip("Z coodrinate at which enemies despawn")]
     [SerializeField] public float despawnZ = -10;
 
-    [SerializeField] public float spawnInterval = 5;
-
     // Direction vectors
     static public Vector3 dirLeft = new Vector3(-1, 0, 0);
     static public Vector3 dirRight = new Vector3(1, 0, 0);
@@ -51,8 +49,6 @@ public class Game : MonoBehaviour
     Player player;
     Button continueButton;
     HUD hud;
-    float timeToSpawn;
-    int enemyIndex;
 
     // Start is called before the first frame update
     void Awake() {
@@ -139,6 +135,7 @@ public class Game : MonoBehaviour
         multiplier = 1;
         hud.SetScore(score);
         hud.SetMultiplier(multiplier);
+        wave.Reset();
         var projectiles = GameObject.FindObjectsOfType<Projectile>();
         foreach (Projectile p in projectiles)
         {
@@ -198,13 +195,6 @@ public class Game : MonoBehaviour
         {
             return;
         }
-        if (timeToSpawn <= 0)
-        {
-            Spawn();
-            timeToSpawn = spawnInterval;
-        }
-
-        timeToSpawn -= Time.deltaTime;
 
         multiplierTime -= Time.deltaTime;
         if (multiplierTime < 0 && multiplier > 1)
@@ -217,19 +207,14 @@ public class Game : MonoBehaviour
             multiplierTime = 0;
         }
         hud.SetMultiplierBar(multiplierTime/multiplierDecay);
-    }
 
-    void Spawn()
-    {
-        var enemy = Instantiate<Enemy>(enemyPrefabs[enemyIndex], new Vector3(0, 0, spawnZ), Quaternion.identity);
-        var pos = enemy.transform.position;
-        pos.x = Random.Range(boundsMin.x * 0.8f, boundsMax.x * 0.8f);
-        enemy.transform.position = pos;
-
-        enemyIndex++;
-        if (enemyIndex >= enemyPrefabs.Count)
+        if (wave.IsOver())
         {
-            enemyIndex = 0;
+            wave.Next();
+            var nw = hud.transform.Find("NewWave");
+            nw.GetComponent<TextMeshProUGUI>().text = "Wave " + wave.number;
+            var anim = nw.GetComponent<Animator>();
+            anim.Play("Message3s");
         }
     }
 }
