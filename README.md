@@ -2,6 +2,10 @@
 
 Bullet Hell game. Unity project to hone up Unity & C# skills. 
 
+# Build
+
+Please find last build at: https://drive.google.com/file/d/1jwocSR_ZcYfSANpt2rvf_arYHkM95CmQ/view?usp=sharing
+
 # Controls
 
 - Arrows or WASD: move;
