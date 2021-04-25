@@ -45,6 +45,7 @@ public class WaveEnemy : MonoBehaviour
     [SerializeField] float spawnXMin;
     [SerializeField] float spawnXMax;
 
+    float currentX;
     // Values of current spawn (need to save for swarms).
     float currentSpeedX;
     float currentSpeedZ;
@@ -94,27 +95,12 @@ public class WaveEnemy : MonoBehaviour
     // Spawns enemy or swarm.
     public void Spawn()
     {
-        if (swarmCount == 0)
-        {
-            // Spawn one enemy
-            SpawnEnemy();
-            return;
-        }
-
-        // Spawn swarm (actual spawning is in Update method)
-        swarmRemaining = swarmCount;
-        swarmCooldown = 0;
-    }
-
-    // Spawns enemy prefab
-    void SpawnEnemy()
-    {
         // Make sure enemies spawned closer to edges will move to the center of map.
-        var x = UnityEngine.Random.Range(spawnXMin, spawnXMax);
+        currentX = UnityEngine.Random.Range(spawnXMin, spawnXMax);
         var c = (spawnXMax + spawnXMin) / 2;
         var d = (spawnXMax - spawnXMin) / 2;
-        var left = x < (c - d/2);
-        var right = x > (c + d/2);
+        var left = currentX < (c - d/2);
+        var right = currentX > (c + d/2);
         var center = !left && !right;
         float sign;
         if (left)
@@ -136,7 +122,22 @@ public class WaveEnemy : MonoBehaviour
         currentPhaseX = UnityEngine.Random.Range(phaseXMin, phaseXMax);
         currentPhaseZ = UnityEngine.Random.Range(phaseZMin, phaseZMax);
 
-        var enemy = Instantiate<Enemy>(prefab, new Vector3(x, 0, spawnZ), Quaternion.identity);
+        if (swarmCount == 0)
+        {
+            // Spawn one enemy
+            SpawnEnemy();
+            return;
+        }
+
+        // Spawn swarm (actual spawning is in Update method)
+        swarmRemaining = swarmCount;
+        swarmCooldown = 0;
+    }
+
+    // Spawns enemy prefab
+    void SpawnEnemy()
+    {
+        var enemy = Instantiate<Enemy>(prefab, new Vector3(currentX, 0, spawnZ), Quaternion.identity);
         enemy.trajectory.speedX = currentSpeedX;
         enemy.trajectory.speedZ = currentSpeedZ;
         enemy.trajectory.amplitudeX = currentAmplitudeX;

@@ -29,8 +29,8 @@ public class Wave : MonoBehaviour {
     [Tooltip("Wave strength regeneration per second")]
     [SerializeField] float strengthRegen = 10f;
 
-    [Tooltip("Wave strength regeneration increase per wave #")]
-    [SerializeField] float strengthAccel = 10f;
+    [Tooltip("Wave strength regeneration increase per wave #, percent")]
+    [SerializeField] float strengthAccel = 5f;
 
     [Tooltip("Delay between spawns in seconds")]
     [SerializeField] float spawnDelay = 5f;

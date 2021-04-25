@@ -10,6 +10,8 @@ ScriptsOnlyBuild:
     - Player
     - Projectile
     - Trajectory
+    - Wave
+    - WaveEnemy
     Unity.Rider.Editor.dll:
     - Packages.Rider.Editor.UnitTesting.CallbackData
     Unity.TextMeshPro.dll:
@@ -76,43 +78,47 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1448}
     - Class: 114
-      Script: {instanceID: 1546}
+      Script: {instanceID: 1492}
     - Class: 114
-      Script: {instanceID: 1846}
+      Script: {instanceID: 1548}
     - Class: 114
-      Script: {instanceID: 2084}
+      Script: {instanceID: 1848}
     - Class: 114
-      Script: {instanceID: 2146}
+      Script: {instanceID: 2086}
     - Class: 114
-      Script: {instanceID: 2236}
+      Script: {instanceID: 2148}
     - Class: 114
-      Script: {instanceID: 2484}
+      Script: {instanceID: 2238}
     - Class: 114
       Script: {instanceID: 2486}
     - Class: 114
-      Script: {instanceID: 2690}
+      Script: {instanceID: 2488}
     - Class: 114
-      Script: {instanceID: 2736}
+      Script: {instanceID: 2692}
     - Class: 114
-      Script: {instanceID: 2874}
+      Script: {instanceID: 2738}
     - Class: 114
-      Script: {instanceID: 2932}
+      Script: {instanceID: 2756}
     - Class: 114
-      Script: {instanceID: 3062}
+      Script: {instanceID: 2878}
     - Class: 114
-      Script: {instanceID: 3092}
+      Script: {instanceID: 2936}
     - Class: 114
-      Script: {instanceID: 3116}
+      Script: {instanceID: 3066}
     - Class: 114
-      Script: {instanceID: 3268}
+      Script: {instanceID: 3096}
     - Class: 114
-      Script: {instanceID: 3446}
+      Script: {instanceID: 3120}
     - Class: 114
-      Script: {instanceID: 3454}
+      Script: {instanceID: 3272}
     - Class: 114
-      Script: {instanceID: 3590}
+      Script: {instanceID: 3450}
     - Class: 114
-      Script: {instanceID: 3658}
+      Script: {instanceID: 3458}
+    - Class: 114
+      Script: {instanceID: 3594}
+    - Class: 114
+      Script: {instanceID: 3662}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -146,6 +152,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: Image
+  - hash:
+      serializedVersion: 2
+      Hash: 498c97eeb9c440b727f6f7425157a098
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Wave
   - hash:
       serializedVersion: 2
       Hash: 5ab533713adae59372fb3e10a585c186
@@ -364,7 +376,7 @@ ScriptsOnlyBuild:
     className: RawImage
   - hash:
       serializedVersion: 2
-      Hash: f4416c24e16c8c4fb941c438492d2f2d
+      Hash: ac293f8b5116c9d131eea299d66b632f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Trajectory
@@ -434,6 +446,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TMP_Settings
+  - hash:
+      serializedVersion: 2
+      Hash: 9a866d177d4ce3656ecae29aad7e2e26
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: WaveEnemy
   - hash:
       serializedVersion: 2
       Hash: cf9f5cf2c3145a37ac07f00e50e460f9
@@ -526,7 +544,7 @@ ScriptsOnlyBuild:
     className: TMP_SpriteAnimator
   - hash:
       serializedVersion: 2
-      Hash: 36acf9f0508ce83311057e58a310ae3f
+      Hash: e2c207741022dc5e3994357eac08acb8
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Game
@@ -610,7 +628,7 @@ ScriptsOnlyBuild:
     className: TouchInputModule
   - hash:
       serializedVersion: 2
-      Hash: 7ed646800abc6c0d65c92cdcd93c9ac0
+      Hash: ad09c807a88b6f70cc3b8f105c29b365
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Enemy
@@ -620,12 +638,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TextContainer
-  - hash:
-      serializedVersion: 2
-      Hash: 302141839db227cc984a81bc752cf889
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: Wave
   platform: 19
   scenePathNames:
   - Assets/Scenes/MainScene.unity

@@ -287,6 +287,10 @@ public class Player : MonoBehaviour
             }
             transform.rotation = Quaternion.Euler(0, 0, rot + dir * delta);
         }
+        // Fix random Y coord drift
+        var pos = transform.position;
+        pos.y = 0;
+        transform.position = pos;
     }
 
     // Move ship in direction

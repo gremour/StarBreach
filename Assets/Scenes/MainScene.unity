@@ -123,6 +123,69 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &120872265
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 120872267}
+  - component: {fileID: 120872266}
+  m_Layer: 0
+  m_Name: WaveEnemyInterceptor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &120872266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 120872265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f2257435290fe444915855f1d8fcd2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 4615709194369804440, guid: 1b899a22d4138174daa86563910d6921, type: 3}
+  cost: 20
+  dormant: 4
+  swarmCount: 0
+  swarmDelay: 0
+  speedXMin: 6
+  speedXMax: 9
+  speedZMin: 3
+  speedZMax: 6
+  amplitudeXMin: 0
+  amplitudeXMax: 0
+  amplitudeZMin: 0
+  amplitudeZMax: 0
+  phaseXMin: 0
+  phaseXMax: 0
+  phaseZMin: 0
+  phaseZMax: 0
+  spawnZ: 0
+  spawnXMin: 0
+  spawnXMax: 0
+--- !u!4 &120872267
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 120872265}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &137543967
 GameObject:
   m_ObjectHideFlags: 0
@@ -230,9 +293,12 @@ MonoBehaviour:
   enemies:
   - {fileID: 1312097486}
   - {fileID: 1911464788}
+  - {fileID: 1308347837}
+  - {fileID: 120872266}
+  - {fileID: 786560144}
   packs: 10
   strengthRegen: 10
-  strengthAccel: 10
+  strengthAccel: 5
   spawnDelay: 5
   waveDelay: 5
   maxSpawnWeight: 6
@@ -5751,6 +5817,69 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &786560143
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 786560145}
+  - component: {fileID: 786560144}
+  m_Layer: 0
+  m_Name: WaveEnemyOrbiter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &786560144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 786560143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f2257435290fe444915855f1d8fcd2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 4615709194369804440, guid: 8b96bcce83fb4b640913ebb993bce00f, type: 3}
+  cost: 25
+  dormant: 5
+  swarmCount: 0
+  swarmDelay: 0
+  speedXMin: 0.2
+  speedXMax: 0.2
+  speedZMin: 0.1
+  speedZMax: 0.1
+  amplitudeXMin: 12
+  amplitudeXMax: 16
+  amplitudeZMin: 15
+  amplitudeZMax: 20
+  phaseXMin: 0
+  phaseXMax: 0
+  phaseZMin: 0
+  phaseZMax: 0
+  spawnZ: 0
+  spawnXMin: 0
+  spawnXMax: 0
+--- !u!4 &786560145
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 786560143}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &796496933
 GameObject:
   m_ObjectHideFlags: 0
@@ -6197,6 +6326,69 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1306736281}
   m_CullTransparentMesh: 1
+--- !u!1 &1308347836
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1308347838}
+  - component: {fileID: 1308347837}
+  m_Layer: 0
+  m_Name: WaveEnemySwarmer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1308347837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1308347836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f2257435290fe444915855f1d8fcd2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 4615709194369804440, guid: 988fcf6d1e17c564c9b32402e8b63b60, type: 3}
+  cost: 20
+  dormant: 3
+  swarmCount: 10
+  swarmDelay: 0.2
+  speedXMin: 0.1
+  speedXMax: 0.1
+  speedZMin: 4
+  speedZMax: 8
+  amplitudeXMin: 10
+  amplitudeXMax: 12
+  amplitudeZMin: 0
+  amplitudeZMax: 0
+  phaseXMin: 0
+  phaseXMax: 0
+  phaseZMin: 0
+  phaseZMax: 0
+  spawnZ: 0
+  spawnXMin: 0
+  spawnXMax: 0
+--- !u!4 &1308347838
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1308347836}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1312097484
 GameObject:
   m_ObjectHideFlags: 0
@@ -8274,7 +8466,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 4615709194369804440, guid: 8b0d43385035fee46a0f1619ec927ec1, type: 3}
   cost: 7
-  dormant: 0
+  dormant: 2
   swarmCount: 0
   swarmDelay: 1
   speedXMin: 0.1
