@@ -1,20 +1,37 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Enemy : MonoBehaviour
 {
     [Tooltip("Hull integrity points")]
-    [SerializeField] int maxIntegrity = 15;
+    public int maxIntegrity = 15;
 
     [Tooltip("Score value")]
-    [SerializeField] int score = 10;
+    public int score = 10;
 
     [Tooltip("Blaster projectile prefab")]
-    [SerializeField] Projectile projectilePrefab;
+    public Projectile projectilePrefab;
 
     [Tooltip("Delay between subsequent blaster shots")]
-    [SerializeField] float blasterDelay = 2f;
+    public float blasterDelay = 2f;
 
-    [SerializeField] Trajectory trajectoryPrefab;
+    [Tooltip("Movement trajectories")]
+    public List<Trajectory> trajectories;
+
+    [Tooltip("Trajectory generators (if Trajectories are not set)")]
+    public List<TrajectoryRandomizer> trajectoryGens;
+
+    [Tooltip("Wave: enemy (or swarm) strength cost in pack")]
+    public float cost = 10;
+
+    [Tooltip("Wave: number of wave in which enemy starts to spawn")]
+    public int dormant = 0;
+
+    [Tooltip("Wave: if positive, spawns several of this enemies in a swarm")]
+    public int swarmCount;
+
+    [Tooltip("Wave: delay of spawns inside swarm")]
+    public float swarmDelay = 1f;
 
     // Game reference
     Game game;
@@ -25,19 +42,15 @@ public class Enemy : MonoBehaviour
     Animator explosionAnim;
 
     // Hull integrity
-    private int integrity;
-
-    // Spawn time point;
-    float timeSpawn;
+    int integrity;
 
     // Remaining cooldown on blaster
     float blasterCooldown;
 
-    Vector3 initialPos;
-    Quaternion initialRot;
-    public Trajectory trajectory;
-
     bool dead;
+
+    // Current trajectory index
+    int trajIndex = -1;
 
     void Awake()
     {
@@ -45,10 +58,6 @@ public class Enemy : MonoBehaviour
         shieldAnim = transform.Find("Shield").GetComponent<Animator>();
         explosionAnim = transform.Find("Explosion").GetComponent<Animator>();
         integrity = maxIntegrity;
-        timeSpawn = game.GameTime();
-        initialPos = transform.position;
-        initialRot = transform.rotation;
-        trajectory = Instantiate<Trajectory>(trajectoryPrefab);
         var hb = GetComponentInChildren<Healthbar>();
         if (hb != null)
         {
@@ -56,6 +65,8 @@ public class Enemy : MonoBehaviour
             hb.SetValue(maxIntegrity);
             hb.SetVisible(false);
         }
+        blasterCooldown = blasterDelay;
+        GenerateTrajectories();
     }
 
     // Update is called once per frame
@@ -64,6 +75,11 @@ public class Enemy : MonoBehaviour
         if (dead)
         {
             return;
+        }
+
+        if (trajIndex < 0 || trajectories[trajIndex].IsExpired())
+        {
+            ChangeTrajectory();
         }
 
         if (game.IsPaused())
@@ -77,19 +93,34 @@ public class Enemy : MonoBehaviour
             return;
         }
         ProcessCooldowns();
-        Move();
         Shoot();
     }
 
-    void Move()
+    public void GenerateTrajectories()
     {
-        // Make dead enemy stop
-        if (dead) {
+        if ((trajectories != null && trajectories.Count > 0) || trajectoryGens == null)
+        {
             return;
         }
-        var dt = game.GameTime() - timeSpawn;
-        var trajPos = trajectory.Position(dt);
-        transform.position = initialPos + trajPos;
+        if (trajectories == null)
+        {
+            trajectories = new List<Trajectory>();
+        }
+        foreach(TrajectoryRandomizer tg in trajectoryGens)
+        {
+            var traj = tg.NewTrajectory(gameObject);
+            traj.timeController = new TimeControllerGame(game);
+            trajectories.Add(traj);
+        }
+    }
+
+    public void ReseedTrajectoryGenerator(int seed)
+    {
+        Random.InitState(seed);
+        foreach (TrajectoryRandomizer tg in trajectoryGens)
+        {
+            tg.seed = (int)(Random.value * 0x7fffffffffffffff);
+        }
     }
 
     void Shoot()
@@ -152,7 +183,13 @@ public class Enemy : MonoBehaviour
 
     void Terminate(bool explode = false)
     {
+        if (trajectories != null && trajIndex >= 0)
+        {
+            // Stop trajectory
+            trajectories[trajIndex].Reset();
+        }
         dead = true;
+        
         if (explode)
         {
             Destroy(gameObject, 1f);
@@ -165,4 +202,18 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    void ChangeTrajectory()
+    {
+        //Debug.Log("ChangeTrajectory index=" + trajIndex + ", trajs=" + trajectories.Count);
+        if (trajIndex >= trajectories.Count - 1)
+        {
+            return;
+        }
+        trajIndex++;
+        if (trajIndex > 0)
+        {
+            trajectories[trajIndex-1].Reset();
+        }
+        trajectories[trajIndex].targetTransform = transform;
+    }
 }

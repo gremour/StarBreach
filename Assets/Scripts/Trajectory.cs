@@ -1,63 +1,110 @@
 using UnityEngine;
 using System;
 
-// Trajectory defines position in space after some time.
-// Initial position is zero vector. Add it to initial transform.position
-// to calculate actual position.
 public class Trajectory : MonoBehaviour
 {
-    public enum Type
+    [Tooltip("Original point of trajectory (skip if targetTransform is used")]
+    public Vector3 origin;
+
+    [Tooltip("Speed per second on each axis")]
+    public Vector3 speed;
+
+    [Tooltip("Speed increase per second on each axis")]
+    public Vector3 accel;
+
+    [Tooltip("Amplitude of sine to add to position")]
+    public Vector3 sineAmplitude;
+
+    [Tooltip("Speed of sine phase change (1 equals to 360 degrees per second)")]
+    public Vector3 sineSpeed;
+
+    [Tooltip("Phase of sine to add to position, degrees")]
+    public Vector3 sinePhase;
+
+    [Tooltip("Expiration time in seconds (for external users of class)")]
+    public float expire;
+
+    [Tooltip("Transform object to control (keep None to use this GameObject transform)")]
+    public Transform targetTransform;
+
+    [HideInInspector]
+    public TimeController timeController;
+
+    // Time elapsed since trajectory start
+    float elapsed;
+
+    Vector3 posIncrease;
+    Vector3 speedIncrease;
+
+    void Awake()
     {
-        Static, // Always 0;
-        Straight, // Moves in straigth line;
-        Sine // Moves in sine;
-    }
-
-    [Tooltip("Type of trajectory on X axis")]
-    [SerializeField] public Type typeX = Type.Static;
-
-    [Tooltip("X amplitude (Sine only)")]
-    [SerializeField] public float amplitudeX;
-
-    [Tooltip("X starting phase, degrees (Sine only)")]
-    [SerializeField] public float phaseX;
-
-    [Tooltip("X speed")]
-    [SerializeField] public float speedX;
-
-    [Tooltip("Type of trajectory on Z axis")]
-    [SerializeField] public Type typeZ = Type.Straight;
-
-    [Tooltip("Z amplitude (Sine only)")]
-    [SerializeField] public float amplitudeZ;
-
-    [Tooltip("Z starting phase, degrees (Sine only)")]
-    [SerializeField] public float phaseZ;
-
-    [Tooltip("Z speed")]
-    [SerializeField] public float speedZ;
-
-    // Returns position in trajectory after "time" seconds passed
-    public Vector3 Position(float time)
-    {
-        return new Vector3(
-            Value(time, typeX, amplitudeX, phaseX, speedX),
-            0,
-            Value(time, typeZ, amplitudeZ, phaseZ, speedZ));
-    }
-
-    private float Value(float time, Type t, float amp, float ph, float spd)
-    {
-        switch (t)
+        if (timeController == null)
         {
-        case Type.Sine:
-            return (float)(amp * Math.Sin(time * Math.PI * 2 * spd + ph * Math.PI / 180f));
-        case Type.Straight:
-            return spd * time;
-        default:
-        case Type.Static:
-            return 0;
+            timeController = new TimeControllerUnity();
         }
+        if (targetTransform == null && transform != null)
+        {
+            targetTransform = transform;
+            origin = transform.position;
+        }
+    }
+
+    void Update()
+    {
+        // Freeze trajectory that has no targetTransform assigned
+        if (targetTransform == null)
+        {
+            return;
+        }
+        var deltaTime = timeController.DeltaTime();
+        elapsed += deltaTime;
+        posIncrease.x += speedIncrease.x + speed.x * deltaTime;
+        posIncrease.y += speedIncrease.y + speed.y * deltaTime;
+        posIncrease.z += speedIncrease.z + speed.z * deltaTime;
+        speedIncrease.x += accel.x * deltaTime * deltaTime;
+        speedIncrease.y += accel.y * deltaTime * deltaTime;
+        speedIncrease.z += accel.z * deltaTime * deltaTime;
+        var sine = Vector3.zero;
+        if (sineAmplitude.x != 0f && sineSpeed.x != 0f)
+        {
+            sine.x = sineAmplitude.x * (float) Math.Sin(Math.PI * 2 * elapsed * sineSpeed.x + sinePhase.x * Math.PI / 180f);
+        }
+        if (sineAmplitude.y != 0f && sineSpeed.y != 0f)
+        {
+            sine.y = sineAmplitude.y * (float) Math.Sin(Math.PI * 2 * elapsed * sineSpeed.y + sinePhase.y * Math.PI / 180f);
+        }
+        if (sineAmplitude.z != 0f && sineSpeed.z != 0f)
+        {
+            sine.z = sineAmplitude.z * (float) Math.Sin(Math.PI * 2 * elapsed * sineSpeed.z + sinePhase.z * Math.PI / 180f);
+        }
+        var pos = targetTransform.position;
+        pos.x = origin.x + posIncrease.x + sine.x;
+        pos.y = origin.y + posIncrease.y + sine.y;
+        pos.z = origin.z + posIncrease.z + sine.z;
+        targetTransform.position = pos;
+    }
+
+    public void Reset()
+    {
+        elapsed = 0;
+        posIncrease = Vector3.zero;
+        speedIncrease = Vector3.zero;
+        targetTransform = null;
+    }
+
+    public bool IsExpired()
+    {
+        return expire != 0f && elapsed >= expire;
     }
 }
 
+public abstract class TimeController{
+    public abstract float DeltaTime();
+}
+
+public class TimeControllerUnity: TimeController{
+    public override float DeltaTime()
+    {
+        return Time.deltaTime;
+    }
+}

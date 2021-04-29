@@ -109,7 +109,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8428896295630615471}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.36, y: 0, z: 20}
+  m_LocalPosition: {x: 0, y: 0, z: 30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5452589379148420944}
@@ -164,8 +164,13 @@ MonoBehaviour:
   score: 20
   projectilePrefab: {fileID: 8536004997619092306, guid: 811ca0e5e67c12842802255d761d07e7, type: 3}
   blasterDelay: 2
-  trajectoryPrefab: {fileID: 868681269206243566, guid: 5ec653cc69593db4baf4e4edf0d11e3a, type: 3}
-  trajectory: {fileID: 0}
+  trajectories: []
+  trajectoryGens:
+  - {fileID: -3184061430175112428, guid: 5ec653cc69593db4baf4e4edf0d11e3a, type: 3}
+  cost: 7
+  dormant: 0
+  swarmCount: 0
+  swarmDelay: 1
 --- !u!1001 &1244434999985867976
 PrefabInstance:
   m_ObjectHideFlags: 0

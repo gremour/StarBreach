@@ -218,3 +218,22 @@ public class Game : MonoBehaviour
         }
     }
 }
+
+public class TimeControllerGame: TimeController{
+
+    Game game;
+
+    public TimeControllerGame(Game g)
+    {
+        game = g;
+    }
+
+    public override float DeltaTime()
+    {
+        if (game.IsPaused())
+        {
+            return 0;
+        }
+        return Time.deltaTime;
+    }
+}

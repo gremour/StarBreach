@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 // Wave object spawns enemies in waves.
@@ -15,40 +16,39 @@ public class Wave : MonoBehaviour {
 
     private class CurrentEnemy
     {
-        public WaveEnemy waveEnemy;
-
+        public Enemy enemy;
         public int weight;
     }
 
     [Tooltip("List of enemies")]
-    [SerializeField] List<WaveEnemy> enemies;
+    public List<Enemy> enemies;
 
     [Tooltip("Number of packs per wave")]
-    [SerializeField] int packs = 10;
+    public int packs = 10;
 
     [Tooltip("Wave strength regeneration per second")]
-    [SerializeField] float strengthRegen = 10f;
+    public float strengthRegen = 10f;
 
     [Tooltip("Wave strength regeneration increase per wave #, percent")]
-    [SerializeField] float strengthAccel = 5f;
+    public float strengthAccel = 5f;
 
     [Tooltip("Delay between spawns in seconds")]
-    [SerializeField] float spawnDelay = 5f;
+    public float spawnDelay = 5f;
 
     [Tooltip("Delay between waves in seconds")]
-    [SerializeField] float waveDelay = 10f;
+    public float waveDelay = 10f;
 
     [Tooltip("Maximum relative weight of enemy type in pack. Bigger numbers cause skew to single enemy type more often.")]
-    [SerializeField] int maxSpawnWeight = 6;
+    public int maxSpawnWeight = 6;
 
     [Tooltip("Minimum increase of spawn weight per pack")]
-    [SerializeField] int minSpawnWeightIncrease = 1;
+    public int minSpawnWeightIncrease = 1;
 
     [Tooltip("Maximum increase of spawn weight per pack")]
-    [SerializeField] int maxSpawnWeightIncrease = 3;
+    public int maxSpawnWeightIncrease = 3;
 
     [Tooltip("Number of enemies have their weight increased per pack")]
-    [SerializeField] int weightIncreases = 2;
+    public int weightIncreases = 2;
 
     // Wave number
     public int number;
@@ -101,14 +101,14 @@ public class Wave : MonoBehaviour {
         enemyList = new List<CurrentEnemy>();
         var rnd = new System.Random();
         string weights = "";
-        foreach (WaveEnemy we in enemies)
+        foreach (Enemy we in enemies)
         {
             if (we.dormant > number)
             {
                 continue;
             }
             var ce = new CurrentEnemy();
-            ce.waveEnemy = we;
+            ce.enemy = we;
             ce.weight = rnd.Next(1, maxSpawnWeight+1);
             enemyList.Add(ce);
             weights += ce.weight + " ";
@@ -162,7 +162,7 @@ public class Wave : MonoBehaviour {
 
     // Picks enemy from list; pos is position of 0 to 1
     // in summary list weight.
-    WaveEnemy PickEnemy(float pos)
+    Enemy PickEnemy(float pos)
     {
         if (enemyList.Count == 0)
         {
@@ -181,12 +181,12 @@ public class Wave : MonoBehaviour {
             if (posWeight <= 0)
             {
                 // Debug.Log("PickEnemy pos=" + pos + " enemy chosen=" + (enemyInd+1) + " of " + enemyList.Count);
-                return ce.waveEnemy;
+                return ce.enemy;
             }
             // enemyInd++;
         }
         // Debug.Log("PickEnemy pos=" + pos + " enemy chosen=last");
-        return enemyList[enemyList.Count-1].waveEnemy;
+        return enemyList[enemyList.Count-1].enemy;
     }
 
     // SpawnPack spawns a pack of enemies.
@@ -206,9 +206,39 @@ public class Wave : MonoBehaviour {
             var we = PickEnemy(pos);
             strength -= we.cost;
             strengthSpent += we.cost;
-            we.Spawn();
             enemyCount++;
+
+            Random.InitState((int)System.DateTime.Now.Ticks);
+            var seed = (int)(Random.value * 0x7fffffffffffffff);
+            we.ReseedTrajectoryGenerator(seed);
+            var e = Instantiate(we);
+
+            if (we.swarmCount > 1)
+            {
+                for (int i = 1; i < we.swarmCount; i++)
+                {
+                    SpawnInfo si;
+                    si.enemyPrefab = we;
+                    si.delay = we.swarmDelay * i;
+                    si.seed = seed;
+                    StartCoroutine("SpawnEnemyDelayed", si);
+                }
+            }
         }
         //Debug.Log("Spawned " + enemyCount + " enemies for " + strengthSpent + " strength cost; packs left " + packsLeft);
+    }
+
+    private struct SpawnInfo
+    {
+        public Enemy enemyPrefab;
+        public float delay;
+        public int seed;
+    }
+
+    IEnumerator SpawnEnemyDelayed(SpawnInfo si)
+    {
+        yield return new WaitForSeconds(si.delay);
+        si.enemyPrefab.ReseedTrajectoryGenerator(si.seed);
+        var e = Instantiate(si.enemyPrefab);
     }
 }
